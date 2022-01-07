@@ -1,3 +1,10 @@
+/**
+ * 
+ * Check TODO before db.sequelize.sync({ force: true })...
+ * This method drops and re-syncs the database for development
+ * @TODO delete ({ force: true })...!!!
+ */
+
 // Import dependencies
 // Express --> building the API
 const express = require("express");
@@ -17,12 +24,28 @@ var corsOptions = {
 // add cors w/ .use() method from Express
 app.use(cors(corsOptions));
 
+// parse requests of content-type --> application/json
+app.use(bodyParser.json());
+
 // add body-parser w/ .use() method from Express
 // parse requests of content-type --> application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const db = require("./app/models");
+const { application } = require("express");
+// setting force attribute to 'true' is only for development
+// TODO@ delete before deployment: 
+// { force: true }).then(() => {console.log("Drop and re-sync happened successfully in DB object.");}
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync happened successfully in DB object.");
+});
+
+
+// require in routes for app
+require("./app/routes/tutorial.routes")(app);
+
 // GET route for testing
-app.get("/", (req,res) => {
+app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
 });
 
